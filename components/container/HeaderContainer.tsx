@@ -37,7 +37,6 @@ export function HeaderContainer()  {
         const { privateKey, publicKey } = await secp256k1.generateKeyPair();
         const encodedstr = encodeToString(privateKey, 'hex');
         const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
-        console.log(encryptedValue,'encryptedValue');
         console.log(encryptedValuesse,'encryptedValuesse');
       }else{
         const { privateKey, publicKey } = await secp256k1.generateKeyPair();
