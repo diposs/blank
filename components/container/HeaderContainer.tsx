@@ -5,7 +5,6 @@ import  useStyles  from '../style/container.style'
 import { HeadGroup } from '../inputs/HeaderGroup';
 import { MenuGroup } from '../inputs/MenuGroup';
 import { GsButton } from '../buttons/GSButton';
-import { Skel } from '../Text/skell';
 import { useAuth, usePolybase, useIsAuthenticated} from "@polybase/react";
 import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
@@ -18,7 +17,6 @@ export function HeaderContainer()  {
   const toggled = (() => {update(!openedburger)})
   const { inUser, updateinUser, pKey, updatepKey } = useBoundStore3();
   const valued = inUser;
-  const [Loading, setLoading] = useState<boolean>(false);
   const [isLoggedIn] = useIsAuthenticated();
   const content = Array(12)
     .fill(0)
@@ -26,15 +24,9 @@ export function HeaderContainer()  {
   const polybase = usePolybase();
   const signInUser =  async() => {
     const res = await auth.signIn();
-    setLoading(true);
     let publicKey: any  = res!.publicKey;
-    try {
-      const userData = await polybase.collection('userpvkeyAccount').record(publicKey).get();
-      const exists = userData.exists();
-    }catch(e: any){
-      setLoading(false);
-    }
-    setLoading(false);
+    const userData = await polybase.collection('userpvkeyAccount').record(publicKey).get();
+    const exists = userData.exists();
     console.log(auth!,'jjj');
     };
   useEffect(() => {
@@ -46,7 +38,7 @@ export function HeaderContainer()  {
   <Container className={classes.inner} fluid>
     <HeadGroup/>
     <MenuGroup/>
-    {Loading ? <Skel /> : (<>{isLoggedIn ? (<GsButton onClick={signInUser} />) : (<GsButton onClick={signInUser} />)}</>)}
+    {isLoggedIn ? (<GsButton onClick={signInUser} />) : (<GsButton onClick={signInUser} />)}
     <Burger opened={openedburger} onClick={toggled} className={classes.burgerCss} />
     <Modal opened={opened} onClose={close} size="auto" centered withCloseButton={false} closeOnClickOutside={false}>
       <Stack align="stretch" spacing="xs">
