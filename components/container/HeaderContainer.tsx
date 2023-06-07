@@ -62,7 +62,7 @@ export function HeaderContainer()  {
         updatepvKey(decryptedValue);
         updatepKey(publicKey);
       }else{
-        const privateKeyhex = await eth.decrypt(userData.data.pvkey, res?.privateKey);
+        const privateKeyhex = await eth.decrypt(userData.data.pvkey, res!.privateKey!);
         const decryptedValue = decodeFromString(privateKeyhex, 'hex');
         const publicKey = await secp256k1.getPublicKey(decryptedValue);
         updatepvKey(decryptedValue);
