@@ -27,7 +27,7 @@ export function HeaderContainer()  {
   const signInUser =  async() => {
     const res = await auth.signIn();
     let publicKeys: any  = res!.publicKey;
-    var userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
+    const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
     if(exists == false){
       var privateKey = await secp256k1.generatePrivateKey();
@@ -42,7 +42,7 @@ export function HeaderContainer()  {
     } else{
       const accounts = await eth.requestAccounts();
       const account = accounts[0];
-      const privateKeyhex = await eth.decrypt(user.data.pvkey, account);
+      const privateKeyhex = await eth.decrypt(userData.data.pvkey, account);
       const decryptedValue = decodeFromString(privateKeyhex, 'hex');
       const publicKey = await secp256k1.getPublicKey(decryptedValue);
       console.log(privateKeyhex,'privateKeyhex');
