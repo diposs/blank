@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Container,Modal,Button,Stack,Burger,Drawer} from '@mantine/core';
+import { Container, Modal, Button, Stack, Burger, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import  useStyles  from '../style/container.style'
 import { HeadGroup } from '../inputs/HeaderGroup';
 import { MenuGroup } from '../inputs/MenuGroup';
 import { GsButton } from '../buttons/GSButton';
-import { useAuth, usePolybase, useIsAuthenticated} from "@polybase/react";
-import { secp256k1, encodeToString  } from '@polybase/util'
+import { useAuth, usePolybase, useIsAuthenticated } from "@polybase/react";
+import { secp256k1, encodeToString, decodeFromString } from '@polybase/util'
 import * as eth from "@polybase/eth";
 import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
@@ -30,7 +30,7 @@ export function HeaderContainer()  {
     var userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
     if(exists == false){
-      const { privateKey, publicKey } = await secp256k1.generateKeyPair();
+      var privateKey = await secp256k1.generatePrivateKey();
       const accounts = await eth.requestAccounts();
       const account = accounts[0];
       const encodedstr = encodeToString(privateKey, 'hex')
@@ -40,6 +40,13 @@ export function HeaderContainer()  {
       const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
       console.log(upload,'aad');
     } else{
+      const accounts = await eth.requestAccounts();
+      const account = accounts[0];
+      const privateKeyhex = await eth.decrypt(user.data.pvkey, account);
+      const decryptedValue = decodeFromString(privateKeyhex, 'hex');
+      const publicKey = await secp256k1.getPublicKey(decryptedValue);
+      console.log(privateKeyhex,'privateKeyhex');
+      console.log(publicKey,'publieKey');
       console.log(userData,'gh');
     }
     
