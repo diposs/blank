@@ -38,16 +38,15 @@ export function HeaderContainer()  {
         const encodedstr = encodeToString(privateKey, 'hex');
         const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
         console.log(encryptedValuesse,'encryptedValuesse');
+        const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
+        updatepKey(publicKey);
+        updatepvKey(privateKey);
       }else{
         const { privateKey, publicKey } = await secp256k1.generateKeyPair();
         const accounts = await eth.requestAccounts();
         const account = accounts[0];
         const encodedstr = encodeToString(privateKey, 'hex');
         const encryptedValue = await eth.encrypt(encodedstr, account);
-        const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
-        console.log(encryptedValue,'ddd');
-        console.log(encryptedValuesse,'encryptedValuesse');
-        console.log(encodedstr,'ddssd');
         const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
         updatepKey(publicKey);
         updatepvKey(privateKey);
