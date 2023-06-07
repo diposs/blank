@@ -35,8 +35,12 @@ export function HeaderContainer()  {
       const account = accounts[0];
       const encodedstr = encodeToString(privateKey, 'hex')
       const encryptedValue = await eth.encrypt(encodedstr, account);
-      console.log(encryptedValue,'ddd')
-      console.log(encodedstr,'ddssd')
+      console.log(encryptedValue,'ddd');
+      console.log(encodedstr,'ddssd');
+      const upload = await db.collection('userpvkeyAccount').create([encryptedValue]);
+      console.log(upload,'aad');
+    } else{
+      console.log(userData,'gh');
     }
     
     console.log(auth!,'jjj');
