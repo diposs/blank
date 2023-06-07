@@ -6,6 +6,8 @@ import { HeadGroup } from '../inputs/HeaderGroup';
 import { MenuGroup } from '../inputs/MenuGroup';
 import { GsButton } from '../buttons/GSButton';
 import { useAuth, usePolybase, useIsAuthenticated} from "@polybase/react";
+import { secp256k1 } from '@polybase/util'
+import * as eth from "@polybase/eth";
 import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
 export function HeaderContainer()  {
@@ -24,9 +26,17 @@ export function HeaderContainer()  {
   const polybase = usePolybase();
   const signInUser =  async() => {
     const res = await auth.signIn();
-    let publicKey: any  = res!.publicKey;
-    const userData = await polybase.collection('userpvkeyAccount').record(publicKey).get();
+    let publicKeys: any  = res!.publicKey;
+    var userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
+    if(exists == false){
+      const { privateKey, publicKey } = await secp256k1.generateKeyPair();
+      const accounts = await eth.requestAccounts();
+      const account = accounts[0];
+      const encryptedValue = await eth.encrypt(privateKey, account);
+      console.log(encryptedValue,'ddd')
+    }
+    
     console.log(auth!,'jjj');
     };
   useEffect(() => {
