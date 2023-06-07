@@ -4,7 +4,7 @@ import { useDisclosure } from '@mantine/hooks';
 import  useStyles  from '../style/container.style'
 import { HeadGroup } from '../inputs/HeaderGroup';
 import { MenuGroup } from '../inputs/MenuGroup';
-import { GsButton } from '../buttons/GSButton';
+import { GsButton, GsLogoutButton } from '../buttons/GSButton';
 import { useAuth, usePolybase, useIsAuthenticated } from "@polybase/react";
 import { secp256k1, encodeToString, decodeFromString } from '@polybase/util'
 import * as eth from "@polybase/eth";
