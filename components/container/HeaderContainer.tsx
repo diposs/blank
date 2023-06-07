@@ -35,7 +35,7 @@ export function HeaderContainer()  {
       setLoading(false);
     }
     setLoading(false);
-    console.log(auth?.account,'jjj');
+    console.log(auth!.account,'jjj');
     };
   useEffect(() => {
     auth!.onAuthUpdate((authState) => {
