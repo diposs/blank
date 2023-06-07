@@ -25,31 +25,51 @@ export function HeaderContainer()  {
     .map((_, index) => <p key={index}>Drawer with scroll</p>);
   const polybase = usePolybase();
   const signInUser =  async() => {
+    updatepvKey(null);
+    updatepKey(null);
     const res = await auth.signIn();
     let publicKeys: any  = res!.publicKey;
     console.log(res,'res');
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
     if(exists == false){
-      const { privateKey, publicKey } = await secp256k1.generateKeyPair()
-      const accounts = await eth.requestAccounts();
-      const account = accounts[0];
-      const encodedstr = encodeToString(privateKey, 'hex')
-      const encryptedValue = await eth.encrypt(encodedstr, account);
-      console.log(encryptedValue,'ddd');
-      console.log(encodedstr,'ddssd');
-      const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
-      updatepKey(publicKey);
-      updatepvKey(privateKey);      
-    } else{
-      const accounts = await eth.requestAccounts();
-      const account = accounts[0];
-      const privateKeyhex = await eth.decrypt(userData.data.pvkey, account);
-      const decryptedValue = decodeFromString(privateKeyhex, 'hex');
-      const publicKey = await secp256k1.getPublicKey(decryptedValue);
-      updatepvKey(decryptedValue);
-      updatepKey(publicKey);
-    }
+      if(res!.type != 'metamask'){
+        const { privateKey, publicKey } = await secp256k1.generateKeyPair();
+        const encodedstr = encodeToString(privateKey, 'hex');
+        const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
+        console.log(encryptedValue,'encryptedValue');
+        console.log(encryptedValuesse,'encryptedValuesse');
+      }else{
+        const { privateKey, publicKey } = await secp256k1.generateKeyPair();
+        const accounts = await eth.requestAccounts();
+        const account = accounts[0];
+        const encodedstr = encodeToString(privateKey, 'hex');
+        const encryptedValue = await eth.encrypt(encodedstr, account);
+        const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
+        console.log(encryptedValue,'ddd');
+        console.log(encryptedValuesse,'encryptedValuesse');
+        console.log(encodedstr,'ddssd');
+        const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
+        updatepKey(publicKey);
+        updatepvKey(privateKey);
+      }      
+    }else{
+      if(res!.type == 'metamask'){
+        const accounts = await eth.requestAccounts();
+        const account = accounts[0];
+        const privateKeyhex = await eth.decrypt(userData.data.pvkey, account);
+        const decryptedValue = decodeFromString(privateKeyhex, 'hex');
+        const publicKey = await secp256k1.getPublicKey(decryptedValue);
+        updatepvKey(decryptedValue);
+        updatepKey(publicKey);
+      }else{
+        const privateKeyhex = await eth.decrypt(userData.data.pvkey, res!.privateKey);
+        const decryptedValue = decodeFromString(privateKeyhex, 'hex');
+        const publicKey = await secp256k1.getPublicKey(decryptedValue);
+        updatepvKey(decryptedValue);
+        updatepKey(publicKey);
+      }
+     }
     };
   const signoutUser =  async() => {
     await auth.signOut();
