@@ -38,7 +38,7 @@ export function HeaderContainer()  {
         const encodedstr = encodeToString(privateKey, 'hex');
         const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
         console.log(encryptedValuesse,'encryptedValuesse');
-        const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
+        //const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
         updatepKey(publicKey);
         updatepvKey(privateKey);
       }else{
