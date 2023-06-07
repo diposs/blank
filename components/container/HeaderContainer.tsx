@@ -28,10 +28,14 @@ export function HeaderContainer()  {
     const res = await auth.signIn();
     setLoading(true);
     let publicKey: any  = res!.publicKey;
-    const userData = await polybase.collection('userpvkeyAccount').record(publicKey).get();
-    const exists = userData.exists();
+    try {
+      const userData = await polybase.collection('userpvkeyAccount').record(publicKey).get();
+      const exists = userData.exists();
+    }catch(e: any){
+      setLoading(false);
+    }
     setLoading(false);
-    console.log(exists,'jjj');
+    console.log(auth?.account,'jjj');
     };
   useEffect(() => {
     auth!.onAuthUpdate((authState) => {
@@ -42,7 +46,7 @@ export function HeaderContainer()  {
   <Container className={classes.inner} fluid>
     <HeadGroup/>
     <MenuGroup/>
-    {Loading ? <Skel /> : (<>{isLoggedIn ? (<>gvgvg</>) : (<GsButton onClick={signInUser} />)}</>)}
+    {Loading ? <Skel /> : (<>{isLoggedIn ? (<GsButton onClick={signInUser} />) : (<GsButton onClick={signInUser} />)}</>)}
     <Burger opened={openedburger} onClick={toggled} className={classes.burgerCss} />
     <Modal opened={opened} onClose={close} size="auto" centered withCloseButton={false} closeOnClickOutside={false}>
       <Stack align="stretch" spacing="xs">
