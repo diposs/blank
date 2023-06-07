@@ -17,7 +17,7 @@ export function HeaderContainer()  {
   const openedburger = useBoundStore((state) => state.mmc);
   const update = useBoundStore((state) => state.update);
   const toggled = (() => {update(!openedburger)})
-  const { inUser, updateinUser, pKey, updatepKey } = useBoundStore3();
+  const { inUser, updateinUser, pKey, updatepKey, pvKey, updatepvKey } = useBoundStore3();
   const valued = inUser;
   const [isLoggedIn] = useIsAuthenticated();
   const content = Array(12)
@@ -30,7 +30,7 @@ export function HeaderContainer()  {
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
     if(exists == false){
-      var privateKey = await secp256k1.generatePrivateKey();
+      const { privateKey, publicKey } = await secp256k1.generateKeyPair()
       const accounts = await eth.requestAccounts();
       const account = accounts[0];
       const encodedstr = encodeToString(privateKey, 'hex')
@@ -38,30 +38,29 @@ export function HeaderContainer()  {
       console.log(encryptedValue,'ddd');
       console.log(encodedstr,'ddssd');
       const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
-      console.log(upload,'aad');
+      updatepKey(publicKey);
+      updatepvKey(privateKey);      
     } else{
       const accounts = await eth.requestAccounts();
       const account = accounts[0];
       const privateKeyhex = await eth.decrypt(userData.data.pvkey, account);
       const decryptedValue = decodeFromString(privateKeyhex, 'hex');
       const publicKey = await secp256k1.getPublicKey(decryptedValue);
-      console.log(privateKeyhex,'privateKeyhex');
-      console.log(publicKey,'publieKey');
-      console.log(userData,'gh');
+      updatepvKey(decryptedValue);
+      updatepKey(publicKey);
     }
-    
-    console.log(auth!,'jjj');
     };
-  useEffect(() => {
-    auth!.onAuthUpdate((authState) => {
-    })
-  },[auth,updatepKey])
+  const signoutUser =  async() => {
+    await auth.signOut();
+    updatepvKey(null);
+    updatepKey(null);
+  }
   return (
     <>
   <Container className={classes.inner} fluid>
     <HeadGroup/>
     <MenuGroup/>
-    {isLoggedIn ? (<GsButton onClick={signInUser} />) : (<GsButton onClick={signInUser} />)}
+    {isLoggedIn ? (<GsButton onClick={signoutUser} />) : (<GsButton onClick={signInUser} />)}
     <Burger opened={openedburger} onClick={toggled} className={classes.burgerCss} />
     <Modal opened={opened} onClose={close} size="auto" centered withCloseButton={false} closeOnClickOutside={false}>
       <Stack align="stretch" spacing="xs">
