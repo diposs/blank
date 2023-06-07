@@ -33,8 +33,8 @@ export function HeaderContainer()  {
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
     if(exists == false){
+      const { privateKey, publicKey } = await secp256k1.generateKeyPair();
       if(res!.type != 'metamask'){
-        const { privateKey, publicKey } = await secp256k1.generateKeyPair();
         const encodedstr = encodeToString(privateKey, 'hex');
         const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
         console.log(encryptedValuesse,'encryptedValuesse');
@@ -42,7 +42,6 @@ export function HeaderContainer()  {
         updatepKey(publicKey);
         updatepvKey(privateKey);
       }else{
-        const { privateKey, publicKey } = await secp256k1.generateKeyPair();
         const accounts = await eth.requestAccounts();
         const account = accounts[0];
         const encodedstr = encodeToString(privateKey, 'hex');
