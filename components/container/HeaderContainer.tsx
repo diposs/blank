@@ -60,7 +60,7 @@ export function HeaderContainer()  {
   <Container className={classes.inner} fluid>
     <HeadGroup/>
     <MenuGroup/>
-    {isLoggedIn ? (<GsButton onClick={signoutUser} />) : (<GsButton onClick={signInUser} />)}
+    {isLoggedIn ? (<GsLogoutButton onClick={signoutUser} />) : (<GsButton onClick={signInUser} />)}
     <Burger opened={openedburger} onClick={toggled} className={classes.burgerCss} />
     <Modal opened={opened} onClose={close} size="auto" centered withCloseButton={false} closeOnClickOutside={false}>
       <Stack align="stretch" spacing="xs">
