@@ -6,7 +6,7 @@ import { HeadGroup } from '../inputs/HeaderGroup';
 import { MenuGroup } from '../inputs/MenuGroup';
 import { GsButton } from '../buttons/GSButton';
 import { useAuth, usePolybase, useIsAuthenticated} from "@polybase/react";
-import { secp256k1 } from '@polybase/util'
+import { secp256k1, encodeToString  } from '@polybase/util'
 import * as eth from "@polybase/eth";
 import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
@@ -33,8 +33,10 @@ export function HeaderContainer()  {
       const { privateKey, publicKey } = await secp256k1.generateKeyPair();
       const accounts = await eth.requestAccounts();
       const account = accounts[0];
-      const encryptedValue = await eth.encrypt(privateKey, account);
+      const encodedstr = encodeToString(privateKey, 'hex')
+      const encryptedValue = await eth.encrypt(encodedstr, account);
       console.log(encryptedValue,'ddd')
+      console.log(encodedstr,'ddssd')
     }
     
     console.log(auth!,'jjj');
