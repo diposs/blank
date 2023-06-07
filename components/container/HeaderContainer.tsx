@@ -5,7 +5,7 @@ import  useStyles  from '../style/container.style'
 import { HeadGroup } from '../inputs/HeaderGroup';
 import { MenuGroup } from '../inputs/MenuGroup';
 import { GsButton } from '../buttons/GSButton';
-import { Skel } from '../Text/HeaderText';
+import { Skel } from '../Text/skell';
 import { useAuth, usePolybase, useIsAuthenticated} from "@polybase/react";
 import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
