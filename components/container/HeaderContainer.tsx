@@ -44,7 +44,7 @@ export function HeaderContainer()  {
       const encryptedDataJsonstr = JSON.stringify(encryptedDataJson);
       const strDataAsUint8Array = decodeFromString(encryptedDataJsonstr, 'utf8');
       const str = encodeToString(strDataAsUint8Array, 'hex');
-      const upload = await polybase.collection('userpvkeyAccount').create([str.toString()]);
+      const upload = await polybase.collection('userpvkeyAccount').create([str]);
       updatepKey(publicKey);
       updatepvKey(privateKey);
       console.log(publicKey,'publicKey');
@@ -53,6 +53,7 @@ export function HeaderContainer()  {
       const decryptedValue = decodeFromString(userData.data.pvkey,  'hex');
       const str = encodeToString(decryptedValue, 'utf8');
       const decryptedDataJson = JSON.parse(str);
+      console.log(decryptedDataJson, 'decryptedDataJson')
       const keys = decodeFromString(publicKeys, 'hex');
       const key =  keys.subarray(0, 32);
       const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson)
