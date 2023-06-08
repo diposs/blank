@@ -28,6 +28,7 @@ export function HeaderContainer()  {
     updatepKey(null);
     const res = await auth.signIn();
     let publicKeys: any  = res!.publicKey;
+    updateinUser(publicKeys);
     console.log(res,'res');
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
@@ -73,19 +74,18 @@ export function HeaderContainer()  {
       const publicKey = await secp256k1.getPublicKey(strData);
       updatepvKey(strData);
       updatepKey(publicKey);
+      const strd = encodeToString(publicKey, 'hex');
+      console.log(strd,'strd');
       console.log(publicKey,'publicKey2');
       console.log(strData,'strData');
      }
     };
   const signoutUser =  async() => {
     const userData = await polybase.collection('userAccount').create([]);
-    if(pKey!=null){
-      const strd = encodeToString(pKey!, 'utf8');
-      console.log(strd,'strd');
-    }
     console.log(userData,'userData');
     //await auth.signOut();
     updatepvKey(null);
+    updateinUser(null);
     updatepKey(null);
   }
   return (
