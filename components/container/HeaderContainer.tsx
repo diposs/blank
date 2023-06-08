@@ -37,7 +37,8 @@ export function HeaderContainer()  {
       const { privateKey, publicKey } = await secp256k1.generateKeyPair();
       const keys = Buffer.from(decodeFromString(publicKeys, 'hex'));
       const adding = Buffer.concat([keys, keys],128);
-      const key =  new Uint8Array(adding);
+      //const key =  new Uint8Array(adding);
+      const key = aescbc.generateSecretKey()
       console.log(key,'key');
       const encryptedData = await aescbc.symmetricEncrypt(key, privateKey)
       console.log(encryptedData,'user1');
