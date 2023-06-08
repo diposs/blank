@@ -1,8 +1,8 @@
 import { StateCreator } from 'zustand'
 
 export interface StoreInterface3 {
-  inUser: boolean
-  updateinUser: (inUser: boolean) => void
+  inUser: string | null | undefined
+  updateinUser: (inUser: string | null | undefined) => void
   pKey: Uint8Array | null | undefined
   pvKey: Uint8Array | null | undefined
   updatepKey: (pKey: Uint8Array | null | undefined) => void
@@ -10,7 +10,7 @@ export interface StoreInterface3 {
 }
 
 export const createcompound: StateCreator<StoreInterface3> = (set, get) => ({
-    inUser: false,
+    inUser: null,
     updateinUser: (inUser) => {set({inUser: inUser},)},
     pKey: null,
     updatepKey: (pKey) => {set({pKey: pKey},)},
