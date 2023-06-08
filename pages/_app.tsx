@@ -13,13 +13,13 @@ const auth = typeof window !== "undefined" ? new Auth() : null;
 const myCache = createEmotionCache({ key: 'mantine' });
 
 export default function App({ Component, pageProps }: AppProps) {
- const { pKey } = useBoundStore3();
+ const { pvKey } = useBoundStore3();
   useEffect(() => {
     polybase.signer(async (data) => {
-     if(pKey != null){
+     if(pvKey != null){
       return {
         h: 'eth-personal-sign',
-        sig: ethPersonalSign(pKey, data)
+        sig: ethPersonalSign(pvKey, data)
       }
      }else{
       return {
