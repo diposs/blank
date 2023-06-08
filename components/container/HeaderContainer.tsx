@@ -40,7 +40,7 @@ export function HeaderContainer()  {
       const encryptedDataJsonstr = JSON.stringify(encryptedDataJson);
       const strDataAsUint8Array = decodeFromString(encryptedDataJsonstr, 'utf8');
       const str = encodeToString(strDataAsUint8Array, 'hex');
-      const upload = await polybase.collection('userpvkeyAccount').create([str]);
+      const upload = await polybase.collection('userpvkeyAccount').create([str.toString()]);
       updatepKey(publicKey);
       updatepvKey(privateKey);
       console.log(publicKey,'publicKey');
