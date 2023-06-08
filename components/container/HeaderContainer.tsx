@@ -6,7 +6,7 @@ import { HeadGroup } from '../inputs/HeaderGroup';
 import { MenuGroup } from '../inputs/MenuGroup';
 import { GsButton, GsLogoutButton } from '../buttons/GSButton';
 import { useAuth, usePolybase, useIsAuthenticated } from "@polybase/react";
-import { secp256k1, encodeToString, decodeFromString } from '@polybase/util'
+import { secp256k1, aescbc, decodeFromString, encodeToString, EncryptedDataAesCbc256 } from '@polybase/util'
 import * as eth from "@polybase/eth";
 import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
@@ -34,38 +34,28 @@ export function HeaderContainer()  {
     const exists = userData.exists();
     if(exists == false){
       const { privateKey, publicKey } = await secp256k1.generateKeyPair();
-      if(res!.type != 'metamask'){
-        const encodedstr = encodeToString(privateKey, 'hex');
-        const encryptedValuesse = await eth.encrypt(encodedstr, publicKeys);
-        console.log(encryptedValuesse,'encryptedValuesse');
-        //const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
-        updatepKey(publicKey);
-        updatepvKey(privateKey);
-      }else{
-        const accounts = await eth.requestAccounts();
-        const account = accounts[0];
-        const encodedstr = encodeToString(privateKey, 'hex');
-        const encryptedValue = await eth.encrypt(encodedstr, account);
-        const upload = await polybase.collection('userpvkeyAccount').create([encryptedValue]);
-        updatepKey(publicKey);
-        updatepvKey(privateKey);
-      }      
+      const key = decodeFromString(publicKeys, 'utf8');
+      const encryptedData = await aescbc.symmetricEncrypt(key, privateKey)
+      const encryptedDataJson = {version: encryptedData.version, nonce: encryptedData.nonce, ciphertext: encryptedData.ciphertext, };
+      const encryptedDataJsonstr = JSON.stringify(encryptedDataJson);
+      const strDataAsUint8Array = decodeFromString(encryptedDataJsonstr, 'utf8');
+      const str = encodeToString(strDataAsUint8Array, 'hex');
+      const upload = await polybase.collection('userpvkeyAccount').create([str]);
+      updatepKey(publicKey);
+      updatepvKey(privateKey);
+      console.log(publicKey,'publicKey');
+      console.log(privateKey,'privateKey');
     }else{
-      if(res!.type == 'metamask'){
-        const accounts = await eth.requestAccounts();
-        const account = accounts[0];
-        const privateKeyhex = await eth.decrypt(userData.data.pvkey, account);
-        const decryptedValue = decodeFromString(privateKeyhex, 'hex');
-        const publicKey = await secp256k1.getPublicKey(decryptedValue);
-        updatepvKey(decryptedValue);
-        updatepKey(publicKey);
-      }else{
-        const privateKeyhex = await eth.decrypt(userData.data.pvkey, publicKeys);
-        const decryptedValue = decodeFromString(privateKeyhex, 'hex');
-        const publicKey = await secp256k1.getPublicKey(decryptedValue);
-        updatepvKey(decryptedValue);
-        updatepKey(publicKey);
-      }
+      const decryptedValue = decodeFromString(userData.data.pvkey,  'hex');
+      const str = encodeToString(decryptedValue, 'utf8');
+      const decryptedDataJson = JSON.parse(str);
+      const key = decodeFromString(publicKeys, 'utf8');
+      const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson)
+      const publicKey = await secp256k1.getPublicKey(strData);
+      updatepvKey(strData);
+      updatepKey(publicKey);
+      console.log(publicKey,'publicKey2');
+      console.log(strData,'strData');
      }
     };
   const signoutUser =  async() => {
