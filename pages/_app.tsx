@@ -14,16 +14,21 @@ const myCache = createEmotionCache({ key: 'mantine' });
 
 export default function App({ Component, pageProps }: AppProps) {
  const { pKey } = useBoundStore3();
- if(pkey != null){
   useEffect(() => {
     polybase.signer(async (data) => {
+     if(pkey != null){
       return {
         h: 'eth-personal-sign',
         sig: ethPersonalSign(pKey, data)
       }
+     }else{
+      return {
+        h: 'eth-personal-sign',
+        sig: await auth!.ethPersonalSign(data),
+      }
+    }
     })
-   });
- }
+   },[pkey]);
 
  
   return (
