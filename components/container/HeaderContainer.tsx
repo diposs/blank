@@ -78,7 +78,11 @@ export function HeaderContainer()  {
      }
     };
   const signoutUser =  async() => {
-    await auth.signOut();
+    const userData = await polybase.collection('userAccount').create([]);
+    const strd = encodeToString(pKey, 'utf8');
+    console.log(userData,'userData');
+    console.log(strd,'strd');
+    //await auth.signOut();
     updatepvKey(null);
     updatepKey(null);
   }
