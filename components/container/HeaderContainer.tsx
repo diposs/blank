@@ -52,10 +52,12 @@ export function HeaderContainer()  {
     }else{
       const decryptedValue = decodeFromString(userData.data.pvkey,  'hex');
       const str = encodeToString(decryptedValue, 'utf8');
-      const decryptedDataJson = JSON.parse(str);
-      console.log(decryptedDataJson, 'decryptedDataJson')
+      const decryptedData = JSON.parse(str);
+      console.log(decryptedData, 'decryptedData')
       const keys = decodeFromString(publicKeys, 'hex');
       const key =  keys.subarray(0, 32);
+      const decryptedDataJson = {version: decryptedData.version, nonce: new Uint8Array(decryptedData.nonce), ciphertext: new Uint8Array(decryptedData.ciphertext), };
+      console.log(decryptedDataJson, 'decryptedDataJson')
       console.log(key, 'key')
       const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson)
       console.log(strData, 'strData')
