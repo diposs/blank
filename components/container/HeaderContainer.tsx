@@ -7,7 +7,6 @@ import { MenuGroup } from '../inputs/MenuGroup';
 import { GsButton, GsLogoutButton } from '../buttons/GSButton';
 import { useAuth, usePolybase, useIsAuthenticated } from "@polybase/react";
 import { secp256k1, aescbc, decodeFromString, encodeToString, EncryptedDataAesCbc256 } from '@polybase/util'
-import * as eth from "@polybase/eth";
 import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
 export function HeaderContainer()  {
