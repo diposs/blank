@@ -11,7 +11,7 @@ import { useBoundStore3, useBoundStore } from '../../stores/datastate'
 
 export function HeaderContainer()  {
   const { classes } = useStyles();
-  const { auth } = useAuth();
+  const { auth, state } = useAuth();
   const [opened, { open, close }] = useDisclosure(false);
   const openedburger = useBoundStore((state) => state.mmc);
   const update = useBoundStore((state) => state.update);
@@ -93,7 +93,7 @@ export function HeaderContainer()  {
   <Container className={classes.inner} fluid>
     <HeadGroup/>
     <MenuGroup/>
-    {isLoggedIn && (pKey != null) && (auth?.state.publicKey == inUser)  ? (<GsLogoutButton onClick={signoutUser} />) : (<GsButton onClick={signInUser} />)}
+    {isLoggedIn && (pKey != null) && (state!.publicKey == inUser)  ? (<GsLogoutButton onClick={signoutUser} />) : (<GsButton onClick={signInUser} />)}
     <Burger opened={openedburger} onClick={toggled} className={classes.burgerCss} />
     <Modal opened={opened} onClose={close} size="auto" centered withCloseButton={false} closeOnClickOutside={false}>
       <Stack align="stretch" spacing="xs">
