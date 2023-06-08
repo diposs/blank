@@ -56,7 +56,9 @@ export function HeaderContainer()  {
       console.log(decryptedDataJson, 'decryptedDataJson')
       const keys = decodeFromString(publicKeys, 'hex');
       const key =  keys.subarray(0, 32);
+      console.log(key, 'key')
       const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson)
+      console.log(strData, 'strData')
       const publicKey = await secp256k1.getPublicKey(strData);
       updatepvKey(strData);
       updatepKey(publicKey);
