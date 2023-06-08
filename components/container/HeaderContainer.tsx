@@ -32,7 +32,33 @@ export function HeaderContainer()  {
     console.log(res,'res');
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
-    console.log(userData,'user');
+    console.log(exists,'user');
+    if(exists == false){
+      const { privateKey, publicKey } = await secp256k1.generateKeyPair();
+      const key = decodeFromString(publicKeys, 'utf8');
+      const encryptedData = await aescbc.symmetricEncrypt(key, privateKey)
+      console.log(encryptedData,'user1');
+      const encryptedDataJson = {version: encryptedData.version, nonce: encryptedData.nonce, ciphertext: encryptedData.ciphertext, };
+      const encryptedDataJsonstr = JSON.stringify(encryptedDataJson);
+      const strDataAsUint8Array = decodeFromString(encryptedDataJsonstr, 'utf8');
+      const str = encodeToString(strDataAsUint8Array, 'hex');
+      const upload = await polybase.collection('userpvkeyAccount').create([str.toString()]);
+      updatepKey(publicKey);
+      updatepvKey(privateKey);
+      console.log(publicKey,'publicKey');
+      console.log(privateKey,'privateKey');
+    }else{
+      const decryptedValue = decodeFromString(userData.data.pvkey,  'hex');
+      const str = encodeToString(decryptedValue, 'utf8');
+      const decryptedDataJson = JSON.parse(str);
+      const key = decodeFromString(publicKeys, 'utf8');
+      const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson)
+      const publicKey = await secp256k1.getPublicKey(strData);
+      updatepvKey(strData);
+      updatepKey(publicKey);
+      console.log(publicKey,'publicKey2');
+      console.log(strData,'strData');
+     }
     };
   const signoutUser =  async() => {
     await auth.signOut();
