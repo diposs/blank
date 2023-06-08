@@ -32,6 +32,7 @@ export function HeaderContainer()  {
     console.log(res,'res');
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
+    console.log(userData,'user');
     };
   const signoutUser =  async() => {
     await auth.signOut();
