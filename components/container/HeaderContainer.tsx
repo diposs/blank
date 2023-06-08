@@ -36,7 +36,7 @@ export function HeaderContainer()  {
     if(exists == false){
       const { privateKey, publicKey } = await secp256k1.generateKeyPair();
       const keys = decodeFromString(publicKeys, 'hex');
-      const key =  keys.subarray(0, 31);
+      const key =  keys.subarray(0, 32);
       console.log(key,'key');
       const encryptedData = await aescbc.symmetricEncrypt(key, privateKey)
       console.log(encryptedData,'user1');
@@ -54,7 +54,7 @@ export function HeaderContainer()  {
       const str = encodeToString(decryptedValue, 'utf8');
       const decryptedDataJson = JSON.parse(str);
       const keys = decodeFromString(publicKeys, 'hex');
-      const key =  keys.subarray(0, 31);
+      const key =  keys.subarray(0, 32);
       const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson)
       const publicKey = await secp256k1.getPublicKey(strData);
       updatepvKey(strData);
