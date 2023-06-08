@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Container, Modal, Button, Stack, Burger, Drawer } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import  useStyles  from '../style/container.style'
@@ -88,6 +88,10 @@ export function HeaderContainer()  {
     updateinUser(null);
     updatepKey(null);
   }
+  useEffect(() => {
+    auth!.onAuthUpdate((authState) => {
+    })
+  })
   return (
     <>
   <Container className={classes.inner} fluid>
