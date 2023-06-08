@@ -16,7 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
  const { pKey } = useBoundStore3();
   useEffect(() => {
     polybase.signer(async (data) => {
-     if(pkey != null){
+     if(pKey != null){
       return {
         h: 'eth-personal-sign',
         sig: ethPersonalSign(pKey, data)
