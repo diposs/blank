@@ -11,5 +11,4 @@ export const useBoundStore = create<StoreState>()(persist((...a) => ({
 }), { name: 'app-store',}))
 export const useBoundStore3 = create<StoreState3>()(persist((...a) => ({
     ...createcompound(...a),
-}),{ name: 'store', 
-     storage: createJSONStorage(() => sessionStorage), }))
+}),{ name: 'store',}))
