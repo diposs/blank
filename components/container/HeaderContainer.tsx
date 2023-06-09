@@ -16,7 +16,7 @@ export function HeaderContainer()  {
   const openedburger = useBoundStore((state) => state.mmc);
   const update = useBoundStore((state) => state.update);
   const toggled = (() => {update(!openedburger)})
-  const { inUser, updateinUser, pKey, updatepKey, pvKey, updatepvKey } = useBoundStore3();
+  const { inUser, pRecord, updateinUser, pKey, updatepRecord, updatepKey, pvKey, updatepvKey } = useBoundStore3();
   const valued = inUser;
   const [isLoggedIn] = useIsAuthenticated();
   const content = Array(12)
@@ -25,35 +25,33 @@ export function HeaderContainer()  {
   const polybase = usePolybase();
   const signInUser =  async() => {
     updatepvKey(null);
+    updateinUser(null);
+    updatepRecord(null);
     updatepKey(null);
     const res = await auth.signIn();
     let publicKeys: any  = res!.publicKey;
     updateinUser(publicKeys);
-    console.log(res,'res');
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
-    console.log(exists,'user');
     if(exists == false){
       const { privateKey, publicKey } = await secp256k1.generateKeyPair();
       const keys = decodeFromString(publicKeys, 'hex');
       const key =  keys.subarray(0, 32);
-      console.log(key,'key');
-      const encryptedData = await aescbc.symmetricEncrypt(key, privateKey)
-      console.log(encryptedData,'user1');
+      const encryptedData = await aescbc.symmetricEncrypt(key, privateKey);
       const encryptedDataJson = {version: encryptedData.version, nonce: encryptedData.nonce, ciphertext: encryptedData.ciphertext, };
       const encryptedDataJsonstr = JSON.stringify(encryptedDataJson);
       const strDataAsUint8Array = decodeFromString(encryptedDataJsonstr, 'utf8');
       const str = encodeToString(strDataAsUint8Array, 'hex');
       const upload = await polybase.collection('userpvkeyAccount').create([str]);
+      const precordalpha = encodeToString(publicKey, 'hex');
+      const recordkey = '0x' + precordalpha.slice(4);
+      updatepRecord(recordkey);
       updatepKey(publicKey);
       updatepvKey(privateKey);
-      console.log(publicKey,'publicKey');
-      console.log(privateKey,'privateKey');
     }else{
       const decryptedValue = decodeFromString(userData.data.pvkey,  'hex');
       const str = encodeToString(decryptedValue, 'utf8');
       const decryptedData = JSON.parse(str);
-      console.log(decryptedData, 'decryptedData')
       const keys = decodeFromString(publicKeys, 'hex');
       const key =  keys.subarray(0, 32);
       var nonce = decryptedData.nonce;
@@ -67,25 +65,20 @@ export function HeaderContainer()  {
         resultciphertext.push(ciphertext[i]);
       }
       const decryptedDataJson = {version: decryptedData.version, nonce: new Uint8Array(resultnonce), ciphertext: new Uint8Array(resultciphertext), };
-      console.log(decryptedDataJson, 'decryptedDataJson')
-      console.log(key, 'key')
-      const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson)
-      console.log(strData, 'strData')
+      const strData = await aescbc.symmetricDecrypt(key, decryptedDataJson);
       const publicKey = await secp256k1.getPublicKey(strData);
+      const precordalpha = encodeToString(publicKey, 'hex');
+      const recordkey = '0x' + precordalpha.slice(4);
+      updatepRecord(recordkey);
       updatepvKey(strData);
       updatepKey(publicKey);
-      const strd = encodeToString(publicKey, 'hex');
-      console.log(strd,'strd');
-      console.log(publicKey,'publicKey2');
-      console.log(strData,'strData');
      }
     };
   const signoutUser =  async() => {
-    const userData = await polybase.collection('userAccount').create([]);
-    console.log(userData,'userData');
-    //await auth.signOut();
+    await auth.signOut();
     updatepvKey(null);
     updateinUser(null);
+    updatepRecord(null);
     updatepKey(null);
   }
   useEffect(() => {
