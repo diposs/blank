@@ -34,7 +34,7 @@ export function HeaderContainer()  {
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
     const exists = userData.exists();
     if(exists == false){
-      const { privateKey, publicKey } = await secp256k1.generateKeyPair();
+      const privateKey = await secp256k1.generatePrivateKey();
       const keys = decodeFromString(publicKeys, 'hex');
       const key =  keys.subarray(0, 32);
       const encryptedData = await aescbc.symmetricEncrypt(key, privateKey);
@@ -43,6 +43,7 @@ export function HeaderContainer()  {
       const strDataAsUint8Array = decodeFromString(encryptedDataJsonstr, 'utf8');
       const str = encodeToString(strDataAsUint8Array, 'hex');
       const upload = await polybase.collection('userpvkeyAccount').create([str]);
+      const publicKey = await secp256k1.getPublicKey(privateKey);
       const precordalpha = encodeToString(publicKey, 'hex');
       const recordkey = '0x' + precordalpha.slice(4);
       updatepRecord(recordkey);
