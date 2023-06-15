@@ -43,7 +43,7 @@ export function HeaderContainer()  {
       const str = encodeToString(strDataAsUint8Array, 'hex');
       const publicKey = await secp256k1.getPublicKey(privateKey);
       console.log(publicKey,'publicKey');
-      const upload = await polybase.collection('userpvkeyAccount').create(['str',publicKey]);
+      const upload = await polybase.collection('userpvkeyAccount')<string, [Uint8]>.create(['str',publicKey]);
       console.log(upload,'upload');
       const precordalpha = encodeToString(publicKey, 'hex');
       const recordkey = '0x' + precordalpha.slice(4);
