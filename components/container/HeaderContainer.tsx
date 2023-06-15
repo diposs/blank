@@ -31,6 +31,7 @@ export function HeaderContainer()  {
     let publicKeys: any  = res!.publicKey;
     updateinUser(publicKeys);
     const userData = await polybase.collection('userpvkeyAccount').record(publicKeys).get();
+    console.log(userData,'userData');
     const exists = userData.exists();
     if(exists == false){
       const privateKey = await secp256k1.generatePrivateKey();
