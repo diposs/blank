@@ -43,9 +43,9 @@ export function HeaderContainer()  {
       const strDataAsUint8Array = decodeFromString(encryptedDataJsonstr, 'utf8');
       const str = encodeToString(strDataAsUint8Array, 'hex');
       const publicKey = await secp256k1.getPublicKey(privateKey);
-      const strdd = encodeToString(publicKey, 'utf8');
-      console.log(publicKey,'publicKey');
-      const upload = await polybase.collection('userpvkeyAccount').create(['str',strdd]);
+      const strsadd = encodeToString(publicKey, 'utf8');
+      console.log(strsadd,'publicKey');
+      const upload = await polybase.collection('userpvkeyAccount').create(['str',strsadd]);
       console.log(upload,'upload');
       const precordalpha = encodeToString(publicKey, 'hex');
       const recordkey = '0x' + precordalpha.slice(4);
