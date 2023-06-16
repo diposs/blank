@@ -47,7 +47,7 @@ export function HeaderContainer()  {
       const precordalpha = encodeToString(publicKey, 'hex');
       const recordkey = '0x' + precordalpha.slice(4);
       console.log(recordkey,'publicKey');
-      const upload = await polybase.collection('userpvkeyAccount').create(['str',precordalpha1.buffer]);
+      const upload = await polybase.collection('userpvkeyAccount').create(['str',new publicKey]);
       console.log(upload,'upload');
       updatepRecord(recordkey);
       updatepKey(publicKey);
